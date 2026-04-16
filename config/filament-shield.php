@@ -107,7 +107,7 @@ return [
     'permissions' => [
         'separator' => ':',
         'case' => 'pascal',
-        'generate' => true,
+        'generate' => false,
     ],
 
     /*

@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Artisan;
 echo "Running migrate...\n";
 Artisan::call('migrate', ['--force' => true]);
 
-echo "Generating shield permissions...\n";
-Artisan::call('shield:generate', [
-    '--all' => true,
-    '--panel' => 'admin',
-    '--no-interaction' => true
-]);
-
 echo "Creating or finding admin user...\n";
 $user = User::firstOrCreate(
     ['email' => 'admin@example.com'],
