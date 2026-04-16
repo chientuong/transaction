@@ -23,8 +23,10 @@ use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use App\Domain\System\Infrastructure\Models\Setting;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportBulkAction;
+use App\Domain\Transaction\Presentation\Filament\Exporters\BankAccountExporter;
 
 class BankAccountResource extends Resource
 {
@@ -161,6 +163,12 @@ class BankAccountResource extends Resource
                             ->send();
                     })
                     ->visible(fn ($record) => $record->is_active),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    ExportBulkAction::make()->exporter(BankAccountExporter::class)->label('Xuất các mục đã chọn'),
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

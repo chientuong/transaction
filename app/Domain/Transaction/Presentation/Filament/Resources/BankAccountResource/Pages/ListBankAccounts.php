@@ -4,6 +4,8 @@ namespace App\Domain\Transaction\Presentation\Filament\Resources\BankAccountReso
 
 use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource;
 use Filament\Actions;
+use Filament\Actions\ExportAction;
+use App\Domain\Transaction\Presentation\Filament\Exporters\BankAccountExporter;
 use Filament\Resources\Pages\ListRecords;
 
 class ListBankAccounts extends ListRecords
@@ -13,6 +15,10 @@ class ListBankAccounts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExportAction::make()
+                ->exporter(BankAccountExporter::class)
+                ->label('Xuất Excel')
+                ->modalHeading('Xuất danh sách Tài khoản ngân hàng'),
             Actions\CreateAction::make()->label('Thêm mới'),
         ];
     }

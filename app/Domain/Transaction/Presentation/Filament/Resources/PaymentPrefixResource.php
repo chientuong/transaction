@@ -17,6 +17,10 @@ use Filament\Actions\EditAction;
 use App\Domain\Transaction\Presentation\Filament\Resources\PaymentPrefixResource\Pages\ListPaymentPrefixes;
 use App\Domain\Transaction\Presentation\Filament\Resources\PaymentPrefixResource\Pages\CreatePaymentPrefix;
 use App\Domain\Transaction\Presentation\Filament\Resources\PaymentPrefixResource\Pages\EditPaymentPrefix;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportBulkAction;
+use App\Domain\Transaction\Presentation\Filament\Exporters\PaymentPrefixExporter;
 
 class PaymentPrefixResource extends Resource
 {
@@ -101,6 +105,12 @@ class PaymentPrefixResource extends Resource
             ])
             ->actions([
                 EditAction::make()->label('Chỉnh sửa'),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    ExportBulkAction::make()->exporter(PaymentPrefixExporter::class)->label('Xuất các mục đã chọn'),
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
