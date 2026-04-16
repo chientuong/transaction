@@ -13,7 +13,11 @@ echo "Running migrate...\n";
 Artisan::call('migrate', ['--force' => true]);
 
 echo "Generating shield permissions...\n";
-Artisan::call('shield:generate', ['--all' => true]);
+Artisan::call('shield:generate', [
+    '--all' => true,
+    '--panel' => 'admin',
+    '--no-interaction' => true
+]);
 
 echo "Creating or finding admin user...\n";
 $user = User::firstOrCreate(
@@ -22,7 +26,7 @@ $user = User::firstOrCreate(
 );
 
 echo "Assigning super_admin role...\n";
-$role = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+$role = Role::firstOrCreate(['name' => 'SUPER_ADMIN', 'guard_name' => 'web']);
 $user->assignRole($role);
 
 echo "Account ready: admin@example.com / password\n";
