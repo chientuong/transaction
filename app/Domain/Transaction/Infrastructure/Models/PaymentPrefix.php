@@ -7,8 +7,17 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
+use Database\Factories\PaymentPrefixFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class PaymentPrefix extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return PaymentPrefixFactory::new();
+    }
     protected $table = 'payment_prefixes';
 
     protected $fillable = [

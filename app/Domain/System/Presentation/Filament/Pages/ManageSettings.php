@@ -3,20 +3,21 @@
 namespace App\Domain\System\Presentation\Filament\Pages;
 
 use App\Domain\System\Infrastructure\Models\Setting;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Actions\Action;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ManageSettings extends Page implements HasForms
 {
     use InteractsWithForms;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     protected string $view = 'filament.pages.manage-settings';
@@ -67,6 +68,8 @@ class ManageSettings extends Page implements HasForms
 
                 Section::make('Danh sách Ngân hàng')
                     ->description('Cấu hình danh sách ngân hàng hiển thị trong quản lý tài khoản.')
+                    ->collapsible()
+                    ->collapsed()
                     ->schema([
                         Repeater::make('bank_list')
                             ->label('Danh sách')
@@ -87,6 +90,8 @@ class ManageSettings extends Page implements HasForms
 
                 Section::make('Cấu hình Webhook')
                     ->description('Cấu hình các Webhook để hệ thống đẩy dữ liệu sang bên thứ 3.')
+                    ->collapsible()
+                    ->collapsed()
                     ->schema([
                         Repeater::make('webhook_configs')
                             ->label('Danh sách Webhook')
@@ -112,7 +117,7 @@ class ManageSettings extends Page implements HasForms
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['url'] ?? null)
                             ->columns(3),
-                    ])
+                    ]),
             ])
             ->statePath('data');
     }

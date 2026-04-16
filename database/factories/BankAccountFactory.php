@@ -23,10 +23,11 @@ class BankAccountFactory extends Factory
         return [
             'bank_code' => $this->faker->word(),
             'bank_branch' => $this->faker->city(),
-            'account_number' => $this->faker->numerify('##########'),
+            'account_number' => $this->faker->unique()->numerify('##########'),
             'account_holder' => $this->faker->name(),
             'description' => $this->faker->sentence(),
             'is_active' => true,
+            'is_default' => false,
             'created_by' => User::factory(),
         ];
     }

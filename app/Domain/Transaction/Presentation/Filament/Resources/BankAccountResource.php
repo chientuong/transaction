@@ -93,6 +93,27 @@ class BankAccountResource extends Resource
             Toggle::make('is_active')
                 ->label('Trạng thái Hoạt động')
                 ->default(true),
+
+            Toggle::make('is_default')
+                ->label('Tài khoản Mặc định')
+                ->default(false)
+                ->rules([
+                    function () {
+                        return function (string $attribute, $value, \Closure $fail) {
+                            if ($value) {
+                                $exists = BankAccount::where('is_active', true)
+                                    ->where('is_default', true)
+                                    ->when(request()->route('record'), fn ($query, $record) => $query->where('id', '!=', $record))
+                                    ->exists();
+
+                                if ($exists) {
+                                    $fail('Đã có tài khoản mặc định đang hoạt động rồi.');
+                                }
+                            }
+                        };
+                    },
+                ])
+                ->helperText('Chỉ có thể có một tài khoản mặc định.'),
         ]);
     }
 
@@ -128,6 +149,10 @@ class BankAccountResource extends Resource
 
                 IconColumn::make('is_active')
                     ->label('Hoạt động')
+                    ->boolean(),
+
+                IconColumn::make('is_default')
+                    ->label('Mặc định')
                     ->boolean(),
 
                 TextColumn::make('created_at')

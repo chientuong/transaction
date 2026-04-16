@@ -30,6 +30,7 @@ class BankAccount extends Model
         'account_holder',
         'description',
         'is_active',
+        'is_default',
         'created_by',
     ];
 
@@ -42,6 +43,7 @@ class BankAccount extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_default' => 'boolean',
         ];
     }
 
@@ -52,6 +54,19 @@ class BankAccount extends Model
         static::creating(function ($account) {
             if (Auth::check() && empty($account->created_by)) {
                 $account->created_by = Auth::id();
+            }
+        });
+
+        static::saving(function ($account) {
+            if ($account->is_active && $account->is_default) {
+                $exists = static::where('is_active', true)
+                    ->where('is_default', true)
+                    ->where('id', '!=', $account->id)
+                    ->exists();
+
+                if ($exists) {
+                    throw new \Exception("Đã có tài khoản mặc định đang hoạt động rồi.");
+                }
             }
         });
     }

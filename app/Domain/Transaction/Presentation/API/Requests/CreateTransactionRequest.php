@@ -15,7 +15,7 @@ class CreateTransactionRequest extends FormRequest
     {
         return [
             'prefix_id' => ['required', 'integer', 'exists:payment_prefixes,id'],
-            'bank_account_id' => ['required', 'integer', 'exists:bank_accounts,id'],
+            'bank_account_id' => ['nullable', 'integer', 'exists:bank_accounts,id'],
             'amount' => ['required', 'numeric', 'min:0'],
             'user_id' => ['nullable', 'string'],
             'sync_status' => ['nullable', 'string', 'in:PENDING,RECEIVED_SIGNAL,FAILED,SUCCESS'],
