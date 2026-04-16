@@ -5,9 +5,9 @@ namespace App\Domain\Transaction\Presentation\API\Controllers;
 use App\Domain\System\Infrastructure\Models\Setting;
 use App\Domain\Transaction\Application\Actions\ProcessSepayWebhookAction;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Exception;
 
 class SepayWebhookController extends Controller
 {
@@ -18,16 +18,15 @@ class SepayWebhookController extends Controller
     public function handle(Request $request): JsonResponse
     {
         // 1. Authenticate the webhook
+        // SePay sends API Key with header: "Authorization: Apikey API_KEY"
         $providedToken = $request->header('Authorization');
-        
-        // SePay often sends Bearer Token or just a token string in Authorization header.
-        // We'll compare it against the sepay_auth_token in settings.
-        $storedToken = Setting::get('sepay_auth_token');
 
-        if (!$storedToken || !str_contains((string)$providedToken, $storedToken)) {
-             return response()->json([
+        $storedToken = Setting::get('api_key_sepay');
+
+        if (! $storedToken || $providedToken !== "Apikey {$storedToken}") {
+            return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 401);
         }
 
@@ -36,20 +35,20 @@ class SepayWebhookController extends Controller
         if (empty($data)) {
             return response()->json([
                 'success' => false,
-                'message' => 'No data'
+                'message' => 'No data',
             ], 400);
         }
 
         try {
             $this->processAction->execute($data);
-            
+
             return response()->json([
-                'success' => true
+                'success' => true,
             ]);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }

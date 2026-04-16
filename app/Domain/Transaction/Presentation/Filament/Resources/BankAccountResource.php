@@ -2,31 +2,29 @@
 
 namespace App\Domain\Transaction\Presentation\Filament\Resources;
 
+use App\Domain\System\Infrastructure\Models\Setting;
 use App\Domain\Transaction\Infrastructure\Models\BankAccount;
-use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\ListBankAccounts;
+use App\Domain\Transaction\Presentation\Filament\Exporters\BankAccountExporter;
 use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\CreateBankAccount;
 use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\EditBankAccount;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Schemas\Schema;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
+use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\ListBankAccounts;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use App\Domain\System\Infrastructure\Models\Setting;
-use Filament\Notifications\Notification;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ExportBulkAction;
-use App\Domain\Transaction\Presentation\Filament\Exporters\BankAccountExporter;
+use Filament\Tables\Table;
 
 class BankAccountResource extends Resource
 {
@@ -59,7 +57,7 @@ class BankAccountResource extends Resource
         return $schema->components([
             Select::make('bank_code')
                 ->label('Ngân hàng')
-                ->options(function() {
+                ->options(function () {
                     return collect(Setting::get('bank_list', []))
                         ->pluck('bank_name', 'bank_code')
                         ->toArray();
@@ -75,8 +73,11 @@ class BankAccountResource extends Resource
                 ->label('Số tài khoản')
                 ->required()
                 ->unique(ignoreRecord: true)
+                ->regex('/^\d+$/')
+                ->validationMessages([
+                    'regex' => 'Số tài khoản chỉ được chứa chữ số.',
+                ])
                 ->maxLength(50)
-                ->disabled(fn ($record) => $record !== null)
                 ->dehydrated()
                 ->helperText('Không thể chỉnh sửa sau khi tạo thành công.'),
 
@@ -104,6 +105,7 @@ class BankAccountResource extends Resource
                     ->formatStateUsing(function ($state) {
                         $bankList = Setting::get('bank_list', []);
                         $bank = collect($bankList)->firstWhere('bank_code', $state);
+
                         return $bank['bank_name'] ?? $state;
                     })
                     ->searchable()
@@ -136,7 +138,7 @@ class BankAccountResource extends Resource
             ->filters([
                 SelectFilter::make('bank_code')
                     ->label('Ngân hàng')
-                    ->options(function() {
+                    ->options(function () {
                         return collect(Setting::get('bank_list', []))
                             ->pluck('bank_name', 'bank_code')
                             ->toArray();

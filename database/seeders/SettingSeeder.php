@@ -13,10 +13,9 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            'api_system' => 'system_token_placeholder_' . str()->random(10),
+            'api_system' => 'system_token_placeholder_'.str()->random(10),
             'setting_ttl' => 15,
-            'sepay_auth_token' => 'sepay_webhook_token_placeholder',
-            'api_key_sepay' => '',
+            'api_key_sepay' => 'sepay_webhook_token_placeholder',
             'bank_list' => [
                 ['bank_code' => 'Vietcombank', 'bank_name' => 'Vietcombank'],
                 ['bank_code' => 'Techcombank', 'bank_name' => 'Techcombank'],
