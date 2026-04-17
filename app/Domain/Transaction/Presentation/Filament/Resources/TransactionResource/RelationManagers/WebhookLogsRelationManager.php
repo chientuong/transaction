@@ -5,7 +5,8 @@ namespace App\Domain\Transaction\Presentation\Filament\Resources\TransactionReso
 use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -14,6 +15,38 @@ class WebhookLogsRelationManager extends RelationManager
     protected static string $relationship = 'webhookLogs';
 
     protected static ?string $title = 'Lịch sử gọi Webhook';
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                Grid::make(3)
+                    ->schema([
+                        Forms\Components\DateTimePicker::make('created_at')
+                            ->label('Thời gian'),
+                        Forms\Components\TextInput::make('method')
+                            ->label('Phương thức'),
+                        Forms\Components\TextInput::make('status_code')
+                            ->label('Trạng thái'),
+                    ]),
+                Forms\Components\TextInput::make('url')
+                    ->label('URL')
+                    ->columnSpanFull(),
+                Forms\Components\Textarea::make('payload')
+                    ->label('Request Payload')
+                    ->formatStateUsing(fn ($state) => is_array($state) ? json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $state)
+                    ->rows(10)
+                    ->columnSpanFull(),
+                Forms\Components\Textarea::make('response_body')
+                    ->label('Response Body')
+                    ->rows(10)
+                    ->columnSpanFull(),
+                Forms\Components\Textarea::make('error_message')
+                    ->label('Error Message')
+                    ->columnSpanFull()
+                    ->visible(fn ($record) => filled($record?->error_message)),
+            ]);
+    }
 
     public function table(Table $table): Table
     {

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaymentPrefixFactory extends Factory
@@ -13,9 +14,10 @@ class PaymentPrefixFactory extends Factory
     {
         return [
             'name' => $this->faker->words(2, true),
-            'prefix_code' => $this->faker->unique()->lexify('????'),
+            'prefix_code' => $this->faker->unique()->lexify('??????'),
             'description' => $this->faker->sentence(),
             'is_active' => true,
+            'created_by' => User::factory(),
         ];
     }
 }

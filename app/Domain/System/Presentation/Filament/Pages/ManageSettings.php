@@ -3,6 +3,8 @@
 namespace App\Domain\System\Presentation\Filament\Pages;
 
 use App\Domain\System\Infrastructure\Models\Setting;
+use App\Domain\Transaction\Domain\Enums\OpsStatusEnum;
+use App\Domain\Transaction\Domain\Enums\SyncStatusEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -12,6 +14,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class ManageSettings extends Page implements HasForms
@@ -38,6 +41,9 @@ class ManageSettings extends Page implements HasForms
             'setting_ttl' => Setting::get('setting_ttl'),
             'webhook_configs' => Setting::get('webhook_configs', []),
             'bank_list' => Setting::get('bank_list', []),
+            'trigger_sync_status' => Setting::get('trigger_sync_status'),
+            'trigger_ops_status' => Setting::get('trigger_ops_status'),
+            'trigger_mode' => Setting::get('trigger_mode', 'AND'),
         ]);
     }
 
@@ -62,8 +68,7 @@ class ManageSettings extends Page implements HasForms
                             ->suffix('phút')
                             ->numeric()
                             ->required()
-                            ->minValue(1)
-                            ->maxValue(1440),
+                            ->minValue(1),
                     ]),
 
                 Section::make('Danh sách Ngân hàng')
@@ -87,6 +92,53 @@ class ManageSettings extends Page implements HasForms
                             ->itemLabel(fn (array $state): ?string => $state['bank_name'] ?? null)
                             ->columns(2),
                     ]),
+
+                Section::make('Điều kiện kích hoạt Webhook')
+                    ->description('Cấu hình điều kiện để tự động gửi thông báo Webhook sang bên thứ 3.')
+                    ->schema([
+                        Select::make('trigger_mode')
+                            ->label('Chế độ kích hoạt')
+                            ->options([
+                                'AND' => 'Cả 2 (Sync Status VÀ Ops Status đều khớp)',
+                                'OR' => '1 trong 2 (Sync Status HOẶC Ops Status khớp)',
+                            ])
+                            ->default('AND')
+                            ->required()
+                            ->native(false),
+
+                        Select::make('trigger_sync_status')
+                            ->label('Sync Status')
+                            ->options(SyncStatusEnum::class)
+                            ->searchable()
+                            ->multiple()
+                            ->placeholder('Chọn các trạng thái Sync')
+                            ->native(false)
+                            ->required(fn (Get $get) => $get('trigger_mode') === 'AND')
+                            ->rules([
+                                fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                    if ($get('trigger_mode') === 'OR' && ! empty($value) && ! empty($get('trigger_ops_status'))) {
+                                        $fail('Trong chế độ "1 trong 2", chỉ được phép chọn trạng thái từ Sync Status HOẶC Ops Status.');
+                                    }
+                                },
+                            ]),
+
+                        Select::make('trigger_ops_status')
+                            ->label('Ops Status')
+                            ->options(OpsStatusEnum::class)
+                            ->searchable()
+                            ->multiple()
+                            ->placeholder('Chọn các trạng thái Ops')
+                            ->native(false)
+                            ->required(fn (Get $get) => $get('trigger_mode') === 'AND')
+                            ->rules([
+                                fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                    if ($get('trigger_mode') === 'OR' && ! empty($value) && ! empty($get('trigger_sync_status'))) {
+                                        $fail('Trong chế độ "1 trong 2", chỉ được phép chọn trạng thái từ Sync Status HOẶC Ops Status.');
+                                    }
+                                },
+                            ]),
+                    ])
+                    ->columns(3),
 
                 Section::make('Cấu hình Webhook')
                     ->description('Cấu hình các Webhook để hệ thống đẩy dữ liệu sang bên thứ 3.')
@@ -113,6 +165,11 @@ class ManageSettings extends Page implements HasForms
                                     ->label('API Key / Secret')
                                     ->password()
                                     ->revealable(),
+                                TextInput::make('payload_data_key')
+                                    ->label('Key chứa dữ liệu')
+                                    ->placeholder('Mặc định: data')
+                                    ->default('data')
+                                    ->required(),
                             ])
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['url'] ?? null)
