@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Domain\Account\Domain\Enums\RoleEnum;
+use Source\Domain\Account\Domain\Enums\RoleEnum;
 
 class RoleAndPermissionSeeder extends Seeder
 {

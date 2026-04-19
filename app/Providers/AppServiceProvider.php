@@ -9,15 +9,15 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
-use App\Domain\Account\Presentation\Policies\UserPolicy;
+use Source\Domain\Account\Presentation\Policies\UserPolicy;
 use Spatie\Permission\Models\Role;
-use App\Domain\Account\Presentation\Policies\RolePolicy;
-use App\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
-use App\Domain\Transaction\Presentation\Policies\PaymentPrefixPolicy;
-use App\Domain\Transaction\Infrastructure\Models\BankAccount;
-use App\Domain\Transaction\Presentation\Policies\BankAccountPolicy;
-use App\Domain\Transaction\Infrastructure\Models\Transaction;
-use App\Domain\Transaction\Presentation\Policies\TransactionPolicy;
+use Source\Domain\Account\Presentation\Policies\RolePolicy;
+use Source\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
+use Source\Domain\Transaction\Presentation\Policies\PaymentPrefixPolicy;
+use Source\Domain\Transaction\Infrastructure\Models\BankAccount;
+use Source\Domain\Transaction\Presentation\Policies\BankAccountPolicy;
+use Source\Domain\Transaction\Infrastructure\Models\Transaction;
+use Source\Domain\Transaction\Presentation\Policies\TransactionPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Domain\System\Infrastructure\Models\Setting;
+use Source\Domain\System\Infrastructure\Models\Setting;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifySystemToken

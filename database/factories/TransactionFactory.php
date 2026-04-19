@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Domain\Transaction\Domain\Enums\OpsStatusEnum;
-use App\Domain\Transaction\Domain\Enums\SyncStatusEnum;
-use App\Domain\Transaction\Infrastructure\Models\BankAccount;
-use App\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
-use App\Domain\Transaction\Infrastructure\Models\Transaction;
+use Source\Domain\Transaction\Domain\Enums\OpsStatusEnum;
+use Source\Domain\Transaction\Domain\Enums\SyncStatusEnum;
+use Source\Domain\Transaction\Infrastructure\Models\BankAccount;
+use Source\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
+use Source\Domain\Transaction\Infrastructure\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
