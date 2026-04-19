@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Domain\Transaction\Application\Actions;
 
-use App\Domain\Transaction\Infrastructure\Models\BankAccount;
-use App\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
-use App\Domain\Transaction\Infrastructure\Models\Transaction;
+use Source\Domain\Transaction\Infrastructure\Models\BankAccount;
+use Source\Domain\Transaction\Infrastructure\Models\PaymentPrefix;
+use Source\Domain\Transaction\Infrastructure\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,7 +15,7 @@ class DefaultBankAccountTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \App\Domain\System\Infrastructure\Models\Setting::set('api_system', 'system-token');
+        \Source\Domain\System\Infrastructure\Models\Setting::set('api_system', 'system-token');
     }
 
     public function test_it_uses_default_bank_account_when_none_provided(): void

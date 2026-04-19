@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Domain\Transaction\Presentation\Filament\Resources;
 
-use App\Domain\System\Infrastructure\Models\Setting;
-use App\Domain\Transaction\Infrastructure\Models\BankAccount;
-use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\CreateBankAccount;
-use App\Domain\Transaction\Presentation\Filament\Resources\BankAccountResource\Pages\EditBankAccount;
+use Source\Domain\System\Infrastructure\Models\Setting;
+use Source\Domain\Transaction\Infrastructure\Models\BankAccount;
+use App\Filament\Resources\BankAccountResource\Pages\CreateBankAccount;
+use App\Filament\Resources\BankAccountResource\Pages\EditBankAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;

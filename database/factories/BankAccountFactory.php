@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Domain\Transaction\Infrastructure\Models\BankAccount;
+use Source\Domain\Transaction\Infrastructure\Models\BankAccount;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
